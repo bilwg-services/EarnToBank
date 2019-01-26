@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_task"
+            android:icon="@drawable/ic_create_black_24dp"
+            android:title="@string/task" />
+        <item
+            android:id="@+id/nav_pocket"
+            android:icon="@drawable/ic_account_balance_wallet_black_24dp"
+            android:title="@string/pocket" />
+        <item
+            android:id="@+id/nav_redeem"
+            android:icon="@drawable/ic_redeem_black_24dp"
+            android:title="@string/redeem" />
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="@string/history" />
+        <item
+            android:id="@+id/nav_group"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="@string/group" />
+        <item
+            android:id="@+id/nav_alert"
+            android:icon="@drawable/ic_add_alert_black_24dp"
+            android:title="@string/alert" />
+    </group>
+
+    <item android:title="@string/communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="@string/share" />
+
+            <item
+                android:id="@+id/nav_rate_us"
+                android:icon="@drawable/ic_rate_review_black_24dp"
+                android:title="@string/rate_us" />
+
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_warning_black_24dp"
+                android:title="@string/log_out" />
+        </menu>
+    </item>
+
+</menu>
