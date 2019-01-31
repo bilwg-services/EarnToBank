@@ -9,14 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
-
+import kotlinx.android.synthetic.main.nav_header_home.view.*
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val subTitleTv = nav_view.getHeaderView(0).findViewById(R.id.navHeaderSubTitle) as TextView
         titleTv.text = auth.currentUser!!.displayName
         subTitleTv.text = auth.currentUser!!.email
-
+        Picasso.get().load(auth.currentUser!!.photoUrl).centerCrop().into(nav_view.profilePictureIV)
 
     }
 

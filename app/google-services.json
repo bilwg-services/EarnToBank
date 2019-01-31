@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "798684536565-1d7o9oi0kgod3l4emnrbttnfsijnnsfi.apps.googleusercontent.com",
+          "client_id": "798684536565-e36c1cmf03vtcdqc8ka4r9ifo4on33i7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.deucate.earntobank",
-            "certificate_hash": "f254d6cf917d0a498abafbe9c7b496efba76ea12"
+            "certificate_hash": "3a35ccbad6ff3c5052630d679eda4e5b4eba9be8"
           }
         },
         {
