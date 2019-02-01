@@ -3,7 +3,8 @@ package com.deucate.earntobank
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
@@ -13,7 +14,8 @@ class Util(val context: Context? = null) {
 
 
     fun showAlertDialog(title: String, message: String) {
-        AlertDialog.Builder(context).setTitle(title).setMessage(message).setPositiveButton("OK") { _, _ -> }.show()
+        AlertDialog.Builder(context).setTitle(title).setMessage(message)
+            .setPositiveButton("OK") { _, _ -> }.show()
     }
 
     fun showToastMessage(message: String) {
@@ -36,18 +38,12 @@ class Util(val context: Context? = null) {
         }
     }
 
-    fun getTypeOfTeam(team: Int): String {
-        return when (team) {
-            1 -> "Solo"
-            2 -> "Duo"
-            4 -> "Squad"
-            else -> "Undefined"
+    fun changeDataTVStatus(isDataAvailable: Boolean, textView: TextView) {
+        if (isDataAvailable) {
+            textView.visibility = View.INVISIBLE
+        } else {
+            textView.visibility = View.VISIBLE
         }
-    }
-
-    interface OnCallBack {
-        fun onAlertDialogPositiveAction(id: Int, dialog: DialogInterface?, which: Int)
-        fun onAlertDialogNegativeAction(id: Int, dialog: DialogInterface?, which: Int)
     }
 
 }

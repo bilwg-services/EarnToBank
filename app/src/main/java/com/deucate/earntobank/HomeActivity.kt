@@ -19,12 +19,13 @@ import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.nav_header_home.view.*
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import com.deucate.earntobank.home.HomeFragment
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val auth = FirebaseAuth.getInstance()
-    private val util = Util(this)
 
     private val currentFragment = MutableLiveData<Fragment>()
     private var currentFragmentID = 8080
@@ -47,18 +48,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         val titleTv = nav_view.getHeaderView(0).findViewById(R.id.navHeaderTitle) as TextView
         val subTitleTv = nav_view.getHeaderView(0).findViewById(R.id.navHeaderSubTitle) as TextView
+        val profilePictureView = nav_view.getHeaderView(0).findViewById(R.id.profilePictureIV) as CircleImageView
         titleTv.text = auth.currentUser!!.displayName
         subTitleTv.text = auth.currentUser!!.email
-        Picasso.get().load(auth.currentUser!!.photoUrl).centerCrop().into(nav_view.profilePictureIV)
+        Picasso.get().load(auth.currentUser!!.photoUrl).fit().into(profilePictureView)
 
         currentFragment.observe(this, Observer { rootIt ->
             rootIt?.let {
                 if (it.id != currentFragmentID) {
-                    supportFragmentManager.beginTransaction().replace(R.id.container, it, null)
+                    supportFragmentManager.beginTransaction().replace(R.id.container, it, null).commit()
                     currentFragmentID = it.id
                 }
             }
         })
+
+        currentFragment.value = HomeFragment()
 
     }
 
@@ -108,6 +112,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
 
+            R.id.nav_home -> {
+                currentFragment.value = HomeFragment()
+            }
             R.id.nav_task -> {
                 currentFragment.value = TaskFragment()
             }
