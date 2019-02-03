@@ -3,10 +3,10 @@
 
     <item android:drawable="@color/colorPrimary"/>
 
-    <item android:top="60dp"
+    <item android:top="350dp"
         android:bottom="0dp"
-        android:left="10dp"
-        android:right="40dp">
+        android:left="0dp"
+        android:right="-100dp">
         <rotate
             android:fromDegrees="-10"
             android:pivotX="0%"

@@ -15,11 +15,10 @@ import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.app_bar_home.*
-import kotlinx.android.synthetic.main.nav_header_home.view.*
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import com.deucate.earntobank.home.HomeFragment
+import com.deucate.earntobank.task.TaskFragment
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -33,13 +32,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        setSupportActionBar(toolbar)
 
         //Navigation Bat
         val toggle = ActionBarDrawerToggle(
             this,
             drawer_layout,
-            toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
