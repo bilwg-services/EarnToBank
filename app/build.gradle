@@ -42,4 +42,6 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.google.firebase:firebase-firestore:18.0.0'
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
+
 }

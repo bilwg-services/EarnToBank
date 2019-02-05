@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import com.deucate.earntobank.auth.LoginActivity
+import com.deucate.earntobank.group.GroupFragment
 import com.deucate.earntobank.home.HomeFragment
 import com.deucate.earntobank.task.TaskFragment
 import de.hdodenhof.circleimageview.CircleImageView

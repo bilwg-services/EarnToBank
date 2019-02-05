@@ -24,4 +24,6 @@
     <string name="send">Send</string>
     <string name="amount">Amount</string>
     <string name="mobile_number">Mobile Number</string>
+    <string name="users">Users</string>
+    <string name="ref">References</string>
 </resources>

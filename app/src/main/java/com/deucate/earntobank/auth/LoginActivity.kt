@@ -1,8 +1,12 @@
-package com.deucate.earntobank
+package com.deucate.earntobank.auth
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.deucate.earntobank.HomeActivity
+import com.deucate.earntobank.R
+import com.deucate.earntobank.Util
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -11,6 +15,7 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
@@ -18,9 +23,11 @@ class LoginActivity : AppCompatActivity() {
     private val signIn = 69
     private val util = Util(this)
 
+    val db = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (auth.currentUser!=null){
+        if (auth.currentUser != null) {
             startHomeActivity()
         }
         setContentView(R.layout.activity_login)
@@ -43,7 +50,8 @@ class LoginActivity : AppCompatActivity() {
         when (requestCode) {
             signIn -> {
                 try {
-                    val account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException::class.java)
+                    val account = GoogleSignIn.getSignedInAccountFromIntent(data)
+                        .getResult(ApiException::class.java)
                     signInToFirebase(account!!)
                 } catch (e: ApiException) {
                     util.showAlertDialog("Error", e.localizedMessage)
@@ -54,12 +62,46 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkNewUser() {
+        db.collection(getString(R.string.users)).document(auth.uid!!).get().addOnCompleteListener {
+            val result = it.result!!
+            if (it.isSuccessful) {
+                val name = result.getString("Name")
+                if (name.isNullOrEmpty()) {
+                    //new user
+                    registerNewUser()
+                } else {
+                    //old user
+                    startHomeActivity()
+                }
+            }
+        }
+    }
+
+    private fun registerNewUser() {
+        val data = HashMap<String, Any>()
+        data["Name"] = auth.currentUser!!.displayName!!
+        data["Email"] = auth.currentUser!!.email!!
+
+        db.collection(getString(R.string.users)).add(data).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Toast.makeText(
+                    this,
+                    "Welcome ${auth.currentUser!!.displayName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            startHomeActivity()
+        }
+
+    }
+
     private fun signInToFirebase(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    startHomeActivity()
+                    checkNewUser()
                 } else {
                     util.showAlertDialog("Error", task.exception!!.localizedMessage)
                 }
