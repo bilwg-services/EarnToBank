@@ -8,7 +8,7 @@ import com.deucate.earntobank.R
 import kotlinx.android.synthetic.main.card_ref_user.view.*
 import java.text.SimpleDateFormat
 
-class GroupAdapter(private val data: ArrayList<Group>) : RecyclerView.Adapter<GroupViewHolder>() {
+class GroupAdapter(private val data: ArrayList<RefUser>) : RecyclerView.Adapter<GroupViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
         return GroupViewHolder(

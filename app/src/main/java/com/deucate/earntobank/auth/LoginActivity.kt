@@ -1,18 +1,26 @@
 package com.deucate.earntobank.auth
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.deucate.earntobank.Util
+import com.deucate.earntobank.group.RefUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class LoginActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val signIn = 69
+    private val signIn = 68
     private val util = Util(this)
 
     val db = FirebaseFirestore.getInstance()
@@ -31,6 +39,17 @@ class LoginActivity : AppCompatActivity() {
             startHomeActivity()
         }
         setContentView(R.layout.activity_login)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                3
+            )
+        }
+
 
         googleSignInClient = GoogleSignIn.getClient(
             this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -59,6 +78,15 @@ class LoginActivity : AppCompatActivity() {
                     util.showAlertDialog("Error", e.localizedMessage)
                 }
             }
+            69 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val user = data!!.getSerializableExtra("user") as User
+                    addReferUser(user)
+                } else {
+                    util.showToastMessage("No user found.")
+                    startHomeActivity()
+                }
+            }
         }
     }
 
@@ -69,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
                 val name = result.getString("Name")
                 if (name.isNullOrEmpty()) {
                     //new user
-                    registerNewUser()
+                    addReferUser()
                 } else {
                     //old user
                     startHomeActivity()
@@ -79,21 +107,49 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun registerNewUser() {
-        val data = HashMap<String, Any>()
-        data["Name"] = auth.currentUser!!.displayName!!
-        data["Email"] = auth.currentUser!!.email!!
+        val user = User(
+            Name = auth.currentUser!!.displayName!!,
+            Email = auth.currentUser!!.email!!,
+            ImageURL = auth.currentUser!!.photoUrl.toString(),
+            UID = auth.uid!!
+        )
 
-        db.collection(getString(R.string.users)).add(data).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Toast.makeText(
-                    this,
-                    "Welcome ${auth.currentUser!!.displayName}",
-                    Toast.LENGTH_SHORT
-                ).show()
+        db.collection(getString(R.string.users)).document(auth.uid!!).set(user)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(
+                        this,
+                        "Welcome ${auth.currentUser!!.displayName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                startHomeActivity()
             }
-            startHomeActivity()
-        }
 
+    }
+
+    private fun addReferUser() {
+        AlertDialog.Builder(this).setTitle("Refer").setMessage("Do you have refer code?")
+            .setPositiveButton("Yes") { _, _ ->
+                startActivityForResult(Intent(this, ReferActivity::class.java), 69)
+            }.setNegativeButton("No") { _, _ ->
+                registerNewUser()
+            }.show()
+    }
+
+    private fun addReferUser(ref: User) {
+
+        val user = User(
+            Name = auth.currentUser!!.displayName!!,
+            Email = auth.currentUser!!.email!!,
+            ImageURL = auth.currentUser!!.photoUrl.toString(),
+            UID = auth.uid!!
+        )
+
+        db.collection(getString(R.string.users)).document(ref.UID)
+            .collection(getString(R.string.ref)).add(user).addOnCompleteListener {
+            registerNewUser()
+        }
     }
 
     private fun signInToFirebase(account: GoogleSignInAccount) {
@@ -112,4 +168,5 @@ class LoginActivity : AppCompatActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
+
 }

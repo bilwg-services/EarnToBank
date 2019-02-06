@@ -82,7 +82,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         auth.signOut()
                         startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                         finish()
-                    }
+                    }.show()
             }
 
             R.id.nav_share -> {

@@ -21,7 +21,7 @@ class GroupFragment : Fragment() {
 
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
-    private val data = ArrayList<Group>()
+    private val data = ArrayList<RefUser>()
     private val adapter = GroupAdapter(data)
 
     override fun onCreateView(
@@ -40,10 +40,11 @@ class GroupFragment : Fragment() {
             Timber.v(e.toString())
         }
 
-        db.collection(getString(R.string.users)).document(auth.uid!!).collection(getString(R.string.ref)).get().addOnCompleteListener {
+        db.collection(getString(R.string.users)).document(auth.uid!!)
+            .collection(getString(R.string.ref)).get().addOnCompleteListener {
             if (it.isSuccessful) {
                 for (data in it.result!!) {
-                    val group = data.toObject(Group::class.java)
+                    val group = data.toObject(RefUser::class.java)
                     this@GroupFragment.data.add(group)
                 }
                 adapter.notifyDataSetChanged()
