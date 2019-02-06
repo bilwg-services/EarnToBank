@@ -22,6 +22,7 @@ import com.deucate.earntobank.group.GroupFragment
 import com.deucate.earntobank.home.HomeFragment
 import com.deucate.earntobank.task.TaskFragment
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.app_bar_home.*
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -34,11 +35,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        setSupportActionBar(toolbar)
 
         //Navigation Bat
         val toggle = ActionBarDrawerToggle(
             this,
             drawer_layout,
+            toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
