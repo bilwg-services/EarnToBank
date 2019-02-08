@@ -13,17 +13,18 @@ import androidx.core.content.ContextCompat
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.deucate.earntobank.Util
-import com.deucate.earntobank.group.RefUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import p32929.androideasysql_library.Column
+import p32929.androideasysql_library.EasyDB
+
 
 class LoginActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
@@ -61,6 +62,13 @@ class LoginActivity : AppCompatActivity() {
         findViewById<SignInButton>(R.id.loginGSB).setOnClickListener {
             startActivityForResult(googleSignInClient.signInIntent, signIn)
         }
+
+        EasyDB.init(this, "Notification", null, 1)
+            .setTableName("Alert")
+            .addColumn(Column("nid", arrayOf("text", "unique")))
+            .addColumn(Column("title", arrayOf("text")))
+            .addColumn(Column("message", arrayOf("text")))
+            .doneTableColumn()
 
     }
 
@@ -148,8 +156,8 @@ class LoginActivity : AppCompatActivity() {
 
         db.collection(getString(R.string.users)).document(ref.UID)
             .collection(getString(R.string.ref)).add(user).addOnCompleteListener {
-            registerNewUser()
-        }
+                registerNewUser()
+            }
     }
 
     private fun signInToFirebase(account: GoogleSignInAccount) {

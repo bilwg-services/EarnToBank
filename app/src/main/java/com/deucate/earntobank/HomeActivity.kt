@@ -17,12 +17,16 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import androidx.lifecycle.ViewModelProviders
+import com.deucate.earntobank.alert.AlertFragment
 import com.deucate.earntobank.auth.LoginActivity
 import com.deucate.earntobank.group.GroupFragment
 import com.deucate.earntobank.home.HomeFragment
 import com.deucate.earntobank.task.TaskFragment
+import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.app_bar_home.*
+import timber.log.Timber
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +41,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
 
+        val token = FirebaseInstanceId.getInstance().token
+        Timber.d("Token -> $token")
+
+        val viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+
+        viewModel.alerts.observe(this, Observer {
+
+        })
+
         //Navigation Bat
         val toggle = ActionBarDrawerToggle(
             this,
@@ -50,7 +63,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         val titleTv = nav_view.getHeaderView(0).findViewById(R.id.navHeaderTitle) as TextView
         val subTitleTv = nav_view.getHeaderView(0).findViewById(R.id.navHeaderSubTitle) as TextView
-        val profilePictureView = nav_view.getHeaderView(0).findViewById(R.id.profilePictureIV) as CircleImageView
+        val profilePictureView =
+            nav_view.getHeaderView(0).findViewById(R.id.profilePictureIV) as CircleImageView
         titleTv.text = auth.currentUser!!.displayName
         subTitleTv.text = auth.currentUser!!.email
         Picasso.get().load(auth.currentUser!!.photoUrl).fit().into(profilePictureView)
@@ -58,7 +72,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         currentFragment.observe(this, Observer { rootIt ->
             rootIt?.let {
                 if (it.id != currentFragmentID) {
-                    supportFragmentManager.beginTransaction().replace(R.id.container, it, null).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.container, it, null)
+                        .commit()
                     currentFragmentID = it.id
                 }
             }
@@ -81,7 +96,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_logout -> {
                 AlertDialog.Builder(this).setTitle("Warning!!")
-                    .setMessage("Are you sure you want to logout from this app?").setPositiveButton("YES") { _, _ ->
+                    .setMessage("Are you sure you want to logout from this app?")
+                    .setPositiveButton("YES") { _, _ ->
                         auth.signOut()
                         startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                         finish()

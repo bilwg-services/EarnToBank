@@ -1,14 +1,14 @@
-package com.deucate.earntobank.home
+package com.deucate.earntobank
 
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.deucate.earntobank.R
+import com.deucate.earntobank.home.HomeFragment
 import kotlinx.android.synthetic.main.card_home.view.*
 
-class HomeAdaper(
+class MainAdapter(
     private val data: ArrayList<HomeFragment.Home>,
     private val listener: OnClickHomeCard
 ) :

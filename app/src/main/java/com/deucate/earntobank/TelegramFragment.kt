@@ -1,41 +1,39 @@
-package com.deucate.earntobank.home
+package com.deucate.earntobank
 
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.deucate.earntobank.R
-import com.deucate.earntobank.Util
+import com.deucate.earntobank.home.HomeFragment
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import android.content.Intent
-import android.net.Uri
-import com.deucate.earntobank.MainAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_telegram.view.*
 
 
-class HomeFragment : Fragment() {
+class TelegramFragment : Fragment() {
 
     private lateinit var util: Util
     private val db = FirebaseFirestore.getInstance()
-    private val homeData = ArrayList<Home>()
+    private val telegramData = ArrayList<HomeFragment.Home>()
     private lateinit var adaper: MainAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_home, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_telegram, container, false)
+
         util = Util(activity as Context)
         getData()
 
         adaper = MainAdapter(
-            homeData,
+            telegramData,
             object : MainAdapter.OnClickHomeCard {
                 override fun onClickLink(link: String) {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
@@ -44,7 +42,7 @@ class HomeFragment : Fragment() {
             })
 
 
-        val recyclerView = rootView.homeRecyclerView
+        val recyclerView = rootView.telegramRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adaper
 
@@ -52,11 +50,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun getData() {
-        db.collection("Home").get().addOnCompleteListener {
+        db.collection("Telegram").get().addOnCompleteListener {
             if (it.isSuccessful) {
                 for (data in it.result!!) {
-                    homeData.add(
-                        Home(
+                    telegramData.add(
+                        HomeFragment.Home(
                             data.getString("Title")!!,
                             data.getString("PostDate")!!,
                             data.getString("Link")!!
@@ -64,7 +62,7 @@ class HomeFragment : Fragment() {
                     )
                 }
                 adaper.notifyDataSetChanged()
-                if (!(it.result!!.isEmpty)){
+                if (!(it.result!!.isEmpty)) {
                     homeNotFoundTV.visibility = View.INVISIBLE
                 }
             } else {
@@ -73,11 +71,5 @@ class HomeFragment : Fragment() {
         }
 
     }
-
-    data class Home(
-        val Title: String,
-        val PostDate: String,
-        val Link: String
-    )
 
 }

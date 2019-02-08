@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "798684536565-bqu6uuuklk5v7c9c7m26a6fin782nrt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deucate.earntobank",
+            "certificate_hash": "3a35ccbad6ff3c5052630d679eda4e5b4eba9be8"
+          }
+        },
+        {
           "client_id": "798684536565-gglbiol3ri0hrv14hm5ln2baheru90dt.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798684536565-gglbiol3ri0hrv14hm5ln2baheru90dt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
