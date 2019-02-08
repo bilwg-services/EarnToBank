@@ -16,13 +16,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import android.content.ActivityNotFoundException
+import android.graphics.Color
 import android.net.Uri
 import androidx.lifecycle.ViewModelProviders
 import com.deucate.earntobank.alert.AlertFragment
 import com.deucate.earntobank.auth.LoginActivity
 import com.deucate.earntobank.group.GroupFragment
+import com.deucate.earntobank.history.HistoryFragment
 import com.deucate.earntobank.home.HomeFragment
+import com.deucate.earntobank.pocket.PocketFragment
+import com.deucate.earntobank.redeem.RedeemFragment
 import com.deucate.earntobank.task.TaskFragment
+import com.deucate.earntobank.telegram.TelegramFragment
 import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -34,12 +39,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val auth = FirebaseAuth.getInstance()
 
     private val currentFragment = MutableLiveData<Fragment>()
+    private val currentTitle = MutableLiveData<String>()
     private var currentFragmentID = 8080
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
+        toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"))
 
         val token = FirebaseInstanceId.getInstance().token
         Timber.d("Token -> $token")
@@ -79,7 +86,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
 
+        currentTitle.observe(this, Observer { root ->
+            root.let {
+                toolbar.title = it!!
+            }
+        })
+
         currentFragment.value = HomeFragment()
+        currentTitle.value = "Home"
 
     }
 
@@ -132,24 +146,42 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_home -> {
                 currentFragment.value = HomeFragment()
+                currentTitle.value = "Home"
             }
             R.id.nav_task -> {
                 currentFragment.value = TaskFragment()
+                currentTitle.value = "Task"
+
             }
             R.id.nav_pocket -> {
-                currentFragment.value = PocketFragment()
+                currentFragment.value = RedeemFragment()
+                currentTitle.value = "Redeem"
+
             }
             R.id.nav_redeem -> {
-                currentFragment.value = RedeemFragment()
+                currentFragment.value = PocketFragment()
+                currentTitle.value = "Pocket"
+
             }
             R.id.nav_history -> {
                 currentFragment.value = HistoryFragment()
+                currentTitle.value = "History"
+
             }
             R.id.nav_group -> {
                 currentFragment.value = GroupFragment()
+                currentTitle.value = "Group"
+
             }
             R.id.nav_alert -> {
                 currentFragment.value = AlertFragment()
+                currentTitle.value = "Alert"
+
+            }
+            R.id.nav_telegram -> {
+                currentFragment.value = TelegramFragment()
+                currentTitle.value = "Telegram"
+
             }
 
         }

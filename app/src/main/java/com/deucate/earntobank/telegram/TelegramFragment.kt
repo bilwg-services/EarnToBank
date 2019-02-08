@@ -1,6 +1,7 @@
-package com.deucate.earntobank
+package com.deucate.earntobank.telegram
 
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,9 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.deucate.earntobank.MainAdapter
+import com.deucate.earntobank.R
+import com.deucate.earntobank.Util
 import com.deucate.earntobank.home.HomeFragment
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_telegram.*
 import kotlinx.android.synthetic.main.fragment_telegram.view.*
 
 
@@ -36,8 +40,12 @@ class TelegramFragment : Fragment() {
             telegramData,
             object : MainAdapter.OnClickHomeCard {
                 override fun onClickLink(link: String) {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                    startActivity(browserIntent)
+                    try {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                        startActivity(browserIntent)
+                    } catch (e: ActivityNotFoundException) {
+                        util.showToastMessage("Link not valid.")
+                    }
                 }
             })
 
@@ -56,14 +64,14 @@ class TelegramFragment : Fragment() {
                     telegramData.add(
                         HomeFragment.Home(
                             data.getString("Title")!!,
-                            data.getString("PostDate")!!,
+                            data.getString("Time")!!,
                             data.getString("Link")!!
                         )
                     )
                 }
                 adaper.notifyDataSetChanged()
                 if (!(it.result!!.isEmpty)) {
-                    homeNotFoundTV.visibility = View.INVISIBLE
+                    telegramTextView.visibility = View.INVISIBLE
                 }
             } else {
                 util.showToastMessage(it.exception!!.localizedMessage)
