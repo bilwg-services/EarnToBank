@@ -28,4 +28,7 @@
     <string name="ref">References</string>
     <string name="default_notification_channel_id">fcm_default_channel</string>
     <string name="telegram">Telegram</string>
+
+    <string name="app_id">ca-app-pub-8086732239748075~7150672349</string>
+    <string name="important">Important</string>
 </resources>

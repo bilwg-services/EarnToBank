@@ -37,7 +37,7 @@ class MainAdapter(
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(colors[currentColor]))
         currentColor += 1
-        if (currentColor > colors.size) {
+        if (currentColor >= colors.size) {
             currentColor = 0
         }
 

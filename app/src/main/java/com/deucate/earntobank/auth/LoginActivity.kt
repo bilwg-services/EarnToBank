@@ -22,8 +22,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import p32929.androideasysql_library.Column
-import p32929.androideasysql_library.EasyDB
 
 
 class LoginActivity : AppCompatActivity() {
@@ -62,13 +60,6 @@ class LoginActivity : AppCompatActivity() {
         findViewById<SignInButton>(R.id.loginGSB).setOnClickListener {
             startActivityForResult(googleSignInClient.signInIntent, signIn)
         }
-
-        EasyDB.init(this, "Notification", null, 1)
-            .setTableName("Alert")
-            .addColumn(Column("nid", arrayOf("text", "unique")))
-            .addColumn(Column("title", arrayOf("text")))
-            .addColumn(Column("message", arrayOf("text")))
-            .doneTableColumn()
 
     }
 

@@ -15,9 +15,7 @@ import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.ValidationEnforcer
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import p32929.androideasysql_library.EasyDB
 import timber.log.Timber
-import java.util.*
 
 class FirebaseService : FirebaseMessagingService() {
 
@@ -32,12 +30,6 @@ class FirebaseService : FirebaseMessagingService() {
 
         remoteMessage?.notification?.let {
             Timber.d("Message Notification Body: ${it.body}")
-
-            val db = EasyDB.init(this, "Notification", 1)
-            db.addData(1, Calendar.getInstance().timeInMillis.toString())
-                .addData(2, it.title)
-                .addData(3, it.body).doneDataAdding()
-
             sendNotification(it.body!!)
         }
 

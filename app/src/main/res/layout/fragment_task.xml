@@ -12,6 +12,7 @@
         android:layout_height="match_parent"/>
 
     <TextView
+        android:id="@+id/taskDataNotFound"
         android:gravity="center"
         android:text="@string/data_not_found"
         android:layout_width="match_parent"

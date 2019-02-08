@@ -1,5 +1,6 @@
 package com.deucate.earntobank
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
@@ -18,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_home.*
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
-import androidx.lifecycle.ViewModelProviders
 import com.deucate.earntobank.alert.AlertFragment
 import com.deucate.earntobank.auth.LoginActivity
 import com.deucate.earntobank.group.GroupFragment
@@ -28,6 +28,9 @@ import com.deucate.earntobank.pocket.PocketFragment
 import com.deucate.earntobank.redeem.RedeemFragment
 import com.deucate.earntobank.task.TaskFragment
 import com.deucate.earntobank.telegram.TelegramFragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -37,10 +40,21 @@ import timber.log.Timber
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     private val currentFragment = MutableLiveData<Fragment>()
     private val currentTitle = MutableLiveData<String>()
     private var currentFragmentID = 8080
+
+    private lateinit var util: Util
+    private lateinit var progressDialog: ProgressDialog
+
+    companion object {
+        var interstitialAdID = "ca-app-pub-8086732239748075/2491643540"
+        var bannerAdID = "ca-app-pub-8086732239748075/8627405545"
+        var impressionPoints = 1000L
+        var pointsPerRupee = 10L
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +62,28 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"))
 
+        util = Util(this)
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Loading.")
+        progressDialog.setMessage("Please wait we are working for you.")
+        progressDialog.show()
+
+        db.collection(getString(R.string.important)).document("Value").get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                bannerAdID = it.result!!.getString("BannerAdID")!!
+                interstitialAdID = it.result!!.getString("InterstitialAdID")!!
+                impressionPoints = it.result!!.getLong("ImpressionPoint")!!
+                pointsPerRupee = it.result!!.getLong("PointsPerRupee")!!
+            } else {
+                util.showAlertDialog("Error", it.exception!!.localizedMessage)
+            }
+            progressDialog.dismiss()
+            loadBannerAd()
+        }
+
+        @Suppress("DEPRECATION")
         val token = FirebaseInstanceId.getInstance().token
         Timber.d("Token -> $token")
-
-        val viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-
-        viewModel.alerts.observe(this, Observer {
-
-        })
 
         //Navigation Bat
         val toggle = ActionBarDrawerToggle(
@@ -76,6 +104,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         subTitleTv.text = auth.currentUser!!.email
         Picasso.get().load(auth.currentUser!!.photoUrl).fit().into(profilePictureView)
 
+        currentTitle.value = "Home"
+        currentFragment.value = HomeFragment()
+
+        currentTitle.observe(this, Observer { root ->
+            root.let {
+                toolbar.title = it!!
+            }
+        })
+
         currentFragment.observe(this, Observer { rootIt ->
             rootIt?.let {
                 if (it.id != currentFragmentID) {
@@ -86,15 +123,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
 
-        currentTitle.observe(this, Observer { root ->
-            root.let {
-                toolbar.title = it!!
-            }
-        })
+    }
 
-        currentFragment.value = HomeFragment()
-        currentTitle.value = "Home"
-
+    private fun loadBannerAd() {
+        val adRequest = AdRequest.Builder().build()
+        val adView = homeBannerAd
+        adView.adUnitId = bannerAdID
+        adView.adSize = AdSize.BANNER
+        adView.loadAd(adRequest)
     }
 
     override fun onBackPressed() {
