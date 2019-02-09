@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
+import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
-import com.deucate.earntobank.TaskActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_task.view.*
@@ -26,6 +26,7 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
 
     private var lastTask = 0L
     private var currentTaskImpression = 0L
+    private var currentTaskClick = 0L
 
     private lateinit var adapter: TaskAdapter
 
@@ -43,20 +44,29 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
 
         db.collection(getString(R.string.users)).document(auth.uid!!).get().addOnCompleteListener {
             if (it.isSuccessful) {
+                val result = it.result!!
                 try {
-                    val result = it.result!!
-                    Timber.d("$result")
                     lastTask = result.getLong("LastTask")!!
-                    currentTaskImpression = result.getLong("CurrentTaskImpression")!!
-                    for (i in 0..lastTask) {
-                        tasks.value!![i.toInt()].status = true
-                    }
-                    rootView.taskDataNotFound.visibility = View.INVISIBLE
-                    adapter.notifyDataSetChanged()
-                } catch (e: NullPointerException) {
+                } catch (e: java.lang.NullPointerException) {
                     e.printStackTrace()
-                    tasks.value!![0].status = true
                 }
+                try {
+
+                    currentTaskImpression = result.getLong("CurrentTaskImpression")!!
+                } catch (e: java.lang.NullPointerException) {
+                    e.printStackTrace()
+                }
+                try {
+
+                    currentTaskClick = result.getLong("CurrentTaskClick")!!
+                } catch (e: java.lang.NullPointerException) {
+                    e.printStackTrace()
+                }
+                for (i in 0..lastTask) {
+                    tasks.value!![i.toInt()].status = true
+                }
+                rootView.taskDataNotFound.visibility = View.INVISIBLE
+                adapter.notifyDataSetChanged()
             } else {
                 Toast.makeText(activity, it.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
             }
@@ -77,6 +87,8 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
         val intent = Intent(activity, TaskActivity::class.java)
         intent.putExtra("Status", tasks.value!![position].status)
         intent.putExtra("CurrentTaskImpression", currentTaskImpression)
+        intent.putExtra("InterstitialID", HomeActivity.interstitialAdID)
+        intent.putExtra("CurrentTaskClick", currentTaskClick)
         startActivity(intent)
     }
 

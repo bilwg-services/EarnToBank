@@ -31,4 +31,6 @@
 
     <string name="app_id">ca-app-pub-8086732239748075~7150672349</string>
     <string name="important">Important</string>
+    <string name="impression">Impression</string>
+    <string name="click">Click</string>
 </resources>
