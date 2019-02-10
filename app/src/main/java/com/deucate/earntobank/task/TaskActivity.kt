@@ -39,6 +39,12 @@ class TaskActivity : AppCompatActivity() {
         currentTaskClick.value = intent.getLongExtra("CurrentTaskClick", 0)
         status = intent.getBooleanExtra("Status", false)
 
+        if (status){
+            taskClickCounter.text = "10/10"
+            taskImpressionCount.text = "10/10"
+            return
+        }
+
         util = Util(this)
 
         MobileAds.initialize(this, getString(R.string.app_id))
@@ -63,7 +69,7 @@ class TaskActivity : AppCompatActivity() {
             db.collection(getString(R.string.users)).document(auth.uid!!).update(data)
                 .addOnCompleteListener { dbResult ->
                     if (dbResult.isSuccessful) {
-                        taskClickCounter.text = "$currentTaskClick/10"
+                        taskClickCounter.text = "${currentTaskClick.value}/10"
                     } else {
                         util.showToastMessage("Error : ${dbResult.exception!!.localizedMessage}")
                     }
@@ -77,7 +83,7 @@ class TaskActivity : AppCompatActivity() {
             db.collection(getString(R.string.users)).document(auth.uid!!).update(data)
                 .addOnCompleteListener { dbResult ->
                     if (dbResult.isSuccessful) {
-                        taskClickCounter.text = "$currentTaskImpression/10"
+                        taskImpressionCount.text = "${currentTaskImpression.value}/10"
                     } else {
                         util.showToastMessage("Error : ${dbResult.exception!!.localizedMessage}")
                     }

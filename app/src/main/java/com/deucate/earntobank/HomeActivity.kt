@@ -24,8 +24,8 @@ import com.deucate.earntobank.auth.LoginActivity
 import com.deucate.earntobank.group.GroupFragment
 import com.deucate.earntobank.history.HistoryFragment
 import com.deucate.earntobank.home.HomeFragment
-import com.deucate.earntobank.pocket.PocketFragment
 import com.deucate.earntobank.redeem.RedeemFragment
+import com.deucate.earntobank.pocket.PocketFragment
 import com.deucate.earntobank.task.TaskFragment
 import com.deucate.earntobank.telegram.TelegramFragment
 import com.google.android.gms.ads.AdRequest
@@ -35,6 +35,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.app_bar_home.*
 import timber.log.Timber
+import java.lang.NullPointerException
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -54,6 +55,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var bannerAdID = "ca-app-pub-8086732239748075/8627405545"
         var impressionPoints = 1000L
         var pointsPerRupee = 10L
+        var totalPoints = 0L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +76,23 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 interstitialAdID = it.result!!.getString("InterstitialAdID")!!
                 impressionPoints = it.result!!.getLong("ImpressionPoint")!!
                 pointsPerRupee = it.result!!.getLong("PointsPerRupee")!!
+            } else {
+                util.showAlertDialog("Error", it.exception!!.localizedMessage)
+            }
+            progressDialog.dismiss()
+            loadBannerAd()
+        }
+
+        db.collection(getString(R.string.users)).document(auth.uid!!).get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                try {
+                    totalPoints = it.result!!.getLong("TotalPoints")!!
+                } catch (e: NullPointerException) {
+                    e.printStackTrace()
+                    val data = HashMap<String, Any>()
+                    data["TotalPoints"] = 0L
+                    db.collection(getString(R.string.users)).document(auth.uid!!).update(data)
+                }
             } else {
                 util.showAlertDialog("Error", it.exception!!.localizedMessage)
             }
@@ -125,11 +144,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    private var isSet = false
     private fun loadBannerAd() {
         val adRequest = AdRequest.Builder().build()
         val adView = homeBannerAd
-        adView.adUnitId = bannerAdID
-        adView.adSize = AdSize.BANNER
+        if (!isSet) {
+            adView.adUnitId = bannerAdID
+            adView.adSize = AdSize.BANNER
+            isSet = true
+        }
         adView.loadAd(adRequest)
     }
 
@@ -190,12 +213,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_pocket -> {
-                currentFragment.value = RedeemFragment()
+                currentFragment.value = PocketFragment()
                 currentTitle.value = "Redeem"
 
             }
             R.id.nav_redeem -> {
-                currentFragment.value = PocketFragment()
+                currentFragment.value = RedeemFragment()
                 currentTitle.value = "Pocket"
 
             }

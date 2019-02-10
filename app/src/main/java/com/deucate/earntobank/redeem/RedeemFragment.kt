@@ -1,31 +1,42 @@
 package com.deucate.earntobank.redeem
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
+import kotlinx.android.synthetic.main.fragment_redeem.view.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 class RedeemFragment : Fragment() {
 
+    private val pointsPerRupee = HomeActivity.pointsPerRupee
+    private val totalPoints = HomeActivity.totalPoints
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_redeem, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_redeem, container, false)
+
+        val totalEarningInRupee = totalPoints / pointsPerRupee
+
+        rootView.redeemTotalAmount.text = "₹ $totalEarningInRupee"
+
+        rootView.redeemTotalSendBtn.setOnClickListener {
+            if (totalEarningInRupee <= 100) {
+                Toast.makeText(activity, "Reach ₹100 to withdraw money.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+        }
+
+        return rootView
     }
 
 
