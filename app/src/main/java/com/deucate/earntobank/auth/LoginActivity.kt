@@ -13,12 +13,14 @@ import androidx.core.content.ContextCompat
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.deucate.earntobank.Util
+import com.deucate.earntobank.group.RefUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -80,7 +82,13 @@ class LoginActivity : AppCompatActivity() {
             69 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val user = data!!.getSerializableExtra("user") as User
-                    addReferUser(user)
+                    val refUser = RefUser(
+                        Name = user.Name,
+                        Time = Timestamp.now(),
+                        ImageURL = user.ImageURL,
+                        uid = user.UID
+                    )
+                    addReferUser(refUser)
                 } else {
                     util.showToastMessage("No user found.")
                     startHomeActivity()
@@ -90,6 +98,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkNewUser() {
+        val uid = auth.uid!!
         db.collection(getString(R.string.users)).document(auth.uid!!).get().addOnCompleteListener {
             val result = it.result!!
             if (it.isSuccessful) {
@@ -136,17 +145,10 @@ class LoginActivity : AppCompatActivity() {
             }.show()
     }
 
-    private fun addReferUser(ref: User) {
+    private fun addReferUser(ref: RefUser) {
 
-        val user = User(
-            Name = auth.currentUser!!.displayName!!,
-            Email = auth.currentUser!!.email!!,
-            ImageURL = auth.currentUser!!.photoUrl.toString(),
-            UID = auth.uid!!
-        )
-
-        db.collection(getString(R.string.users)).document(ref.UID)
-            .collection(getString(R.string.ref)).add(user).addOnCompleteListener {
+        db.collection(getString(R.string.users)).document(ref.uid)
+            .collection(getString(R.string.ref)).add(ref).addOnCompleteListener {
                 registerNewUser()
             }
     }

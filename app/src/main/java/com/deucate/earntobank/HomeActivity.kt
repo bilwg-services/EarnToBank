@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.deucate.earntobank
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
+import android.widget.LinearLayout
+import android.widget.Toast
 import com.deucate.earntobank.alert.AlertFragment
 import com.deucate.earntobank.auth.LoginActivity
 import com.deucate.earntobank.group.GroupFragment
@@ -28,8 +33,7 @@ import com.deucate.earntobank.redeem.RedeemFragment
 import com.deucate.earntobank.pocket.PocketFragment
 import com.deucate.earntobank.task.TaskFragment
 import com.deucate.earntobank.telegram.TelegramFragment
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
@@ -51,7 +55,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var progressDialog: ProgressDialog
 
     companion object {
-        var interstitialAdID = "ca-app-pub-8086732239748075/2491643540"
+        var interstitialAdID = "ca-app-pub-9733597647251062/5987553963"
         var bannerAdID = "ca-app-pub-8086732239748075/8627405545"
         var impressionPoints = 1000L
         var pointsPerRupee = 10L
@@ -63,6 +67,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"))
+
+        MobileAds.initialize(this, getString(R.string.app_id))
 
         util = Util(this)
         progressDialog = ProgressDialog(this)
@@ -144,16 +150,65 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    private var isSet = false
+    @SuppressLint("TimberArgCount")
     private fun loadBannerAd() {
-        val adRequest = AdRequest.Builder().build()
-        val adView = homeBannerAd
-        if (!isSet) {
-            adView.adUnitId = bannerAdID
-            adView.adSize = AdSize.BANNER
-            isSet = true
+        val adContainer = homeBannerAd
+
+        val adView = AdView(this)
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = bannerAdID
+
+        adView.adListener = object : AdListener() {
+            override fun onAdFailedToLoad(p0: Int) {
+                when (p0) {
+                    AdRequest.ERROR_CODE_INTERNAL_ERROR -> {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            "Something happened internally; for instance, an invalid response was received from the ad server.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_INVALID_REQUEST -> {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            " The ad request was invalid; for instance, the ad unit ID was incorrect.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_NETWORK_ERROR -> {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            "The ad request was unsuccessful due to network connectivity.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_NO_FILL -> {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            "The ad request was successful, but no ad was returned due to lack of ad inventory.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                super.onAdFailedToLoad(p0)
+            }
+
+            override fun onAdLoaded() {
+                Timber.d("--->", "Ad loded")
+                super.onAdLoaded()
+            }
         }
+
+        val adRequest = AdRequest.Builder()
+            /**.addTestDevice("5B7898C326E02838085FDF1DF2A6D711")**/
+            .build()
         adView.loadAd(adRequest)
+
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        adContainer.addView(adView, params)
     }
 
     override fun onBackPressed() {

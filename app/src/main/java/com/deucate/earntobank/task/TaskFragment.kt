@@ -15,7 +15,6 @@ import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_task.view.*
-import timber.log.Timber
 
 class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
 
@@ -51,19 +50,20 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
                     e.printStackTrace()
                 }
                 try {
-
                     currentTaskImpression = result.getLong("CurrentTaskImpression")!!
                 } catch (e: java.lang.NullPointerException) {
                     e.printStackTrace()
                 }
                 try {
-
                     currentTaskClick = result.getLong("CurrentTaskClick")!!
                 } catch (e: java.lang.NullPointerException) {
                     e.printStackTrace()
                 }
-                for (i in 0..lastTask) {
-                    tasks.value!![i.toInt()].status = true
+
+                if (lastTask != 0L) {
+                    for (i in 0..lastTask) {
+                        tasks.value!![i.toInt()].status = true
+                    }
                 }
                 rootView.taskDataNotFound.visibility = View.INVISIBLE
                 adapter.notifyDataSetChanged()

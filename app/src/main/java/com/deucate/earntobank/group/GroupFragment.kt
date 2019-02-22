@@ -42,14 +42,22 @@ class GroupFragment : Fragment() {
 
         db.collection(getString(R.string.users)).document(auth.uid!!)
             .collection(getString(R.string.ref)).get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                for (data in it.result!!) {
-                    val group = data.toObject(RefUser::class.java)
-                    this@GroupFragment.data.add(group)
+                if (it.isSuccessful) {
+                    for (data in it.result!!) {
+                        if (it.isSuccessful) {
+                            this@GroupFragment.data.add(
+                                RefUser(
+                                    Name = data.getString("name")!!,
+                                    Time = data.getTimestamp("time")!!,
+                                    ImageURL = data.getString("imageURL")!!,
+                                    uid = data.getString("uid")!!
+                                )
+                            )
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
                 }
-                adapter.notifyDataSetChanged()
             }
-        }
 
         val recyclerView = rootView.groupRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)

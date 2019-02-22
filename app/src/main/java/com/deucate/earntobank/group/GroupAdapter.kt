@@ -26,7 +26,7 @@ class GroupAdapter(private val data: ArrayList<RefUser>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
         val group = data[position]
-        val dateFormat = SimpleDateFormat("hh:mm AA dd:MM:yy")
+        val dateFormat = SimpleDateFormat("hh:mm aa dd:MM:yy")
         val time = dateFormat.format(group.Time.toDate())
 
         holder.nameTv.text = group.Name

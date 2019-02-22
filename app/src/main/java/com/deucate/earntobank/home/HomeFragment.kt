@@ -1,6 +1,7 @@
 package com.deucate.earntobank.home
 
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import com.deucate.earntobank.MainAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -23,7 +25,7 @@ class HomeFragment : Fragment() {
     private lateinit var util: Util
     private val db = FirebaseFirestore.getInstance()
     private val homeData = ArrayList<Home>()
-    private lateinit var adaper: MainAdapter
+    private lateinit var adapter: MainAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,19 +36,23 @@ class HomeFragment : Fragment() {
         util = Util(activity as Context)
         getData()
 
-        adaper = MainAdapter(
+        adapter = MainAdapter(
             homeData,
             object : MainAdapter.OnClickHomeCard {
                 override fun onClickLink(link: String) {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                    startActivity(browserIntent)
+                    try {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                        startActivity(browserIntent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(activity,"This is not url!! is it?",Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
 
 
         val recyclerView = rootView.homeRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adaper
+        recyclerView.adapter = adapter
 
         return rootView
     }
@@ -63,8 +69,8 @@ class HomeFragment : Fragment() {
                         )
                     )
                 }
-                adaper.notifyDataSetChanged()
-                if (!(it.result!!.isEmpty)){
+                adapter.notifyDataSetChanged()
+                if (!(it.result!!.isEmpty)) {
                     homeNotFoundTV.visibility = View.INVISIBLE
                 }
             } else {

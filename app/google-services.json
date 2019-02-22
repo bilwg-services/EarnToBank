@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:798684536565:android:57db5ce3a2783479",
+        "mobilesdk_app_id": "1:798684536565:android:9f5a6c756bedb410",
         "android_client_info": {
-          "package_name": "com.deucate.earntobank"
+          "package_name": "com.deucate.earnengine"
         }
       },
       "oauth_client": [
         {
-          "client_id": "798684536565-bqu6uuuklk5v7c9c7m26a6fin782nrt9.apps.googleusercontent.com",
+          "client_id": "798684536565-ii6vlfe8tn4h0ap9jb27v0hd75nvsd19.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.deucate.earntobank",
-            "certificate_hash": "3a35ccbad6ff3c5052630d679eda4e5b4eba9be8"
+            "package_name": "com.deucate.earnengine",
+            "certificate_hash": "58790bfb18524ebeabbb3a3539f521949b4ade18"
           }
         },
         {
@@ -49,6 +49,59 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798684536565:android:57db5ce3a2783479",
+        "android_client_info": {
+          "package_name": "com.deucate.earntobank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798684536565-bqu6uuuklk5v7c9c7m26a6fin782nrt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deucate.earntobank",
+            "certificate_hash": "3a35ccbad6ff3c5052630d679eda4e5b4eba9be8"
+          }
+        },
+        {
+          "client_id": "798684536565-hm8r06n0k4lntfsr5nb5mqjg5j6jaip3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deucate.earntobank",
+            "certificate_hash": "58790bfb18524ebeabbb3a3539f521949b4ade18"
+          }
+        },
+        {
+          "client_id": "798684536565-gglbiol3ri0hrv14hm5ln2baheru90dt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4LhElnC31vrzvnHvcYYkX9bas3DYs01k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798684536565-gglbiol3ri0hrv14hm5ln2baheru90dt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-9733597647251062~5398975578"
     }
   ],
   "configuration_version": "1"

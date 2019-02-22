@@ -3,6 +3,7 @@ package com.deucate.earntobank.task
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.deucate.earntobank.R
@@ -53,6 +54,47 @@ class TaskActivity : AppCompatActivity() {
         mInterstitialAd.adUnitId = interstitialAdID
         mInterstitialAd.loadAd(AdRequest.Builder().build())
 
+        mInterstitialAd.adListener = object : AdListener() {
+            override fun onAdFailedToLoad(p0: Int) {
+                when (p0) {
+                    AdRequest.ERROR_CODE_INTERNAL_ERROR -> {
+                        Toast.makeText(
+                            this@TaskActivity,
+                            "Something happened internally; for instance, an invalid response was received from the ad server.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_INVALID_REQUEST -> {
+                        Toast.makeText(
+                            this@TaskActivity,
+                            " The ad request was invalid; for instance, the ad unit ID was incorrect.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_NETWORK_ERROR -> {
+                        Toast.makeText(
+                            this@TaskActivity,
+                            "The ad request was unsuccessful due to network connectivity.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AdRequest.ERROR_CODE_NO_FILL -> {
+                        Toast.makeText(
+                            this@TaskActivity,
+                            "The ad request was successful, but no ad was returned due to lack of ad inventory.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                super.onAdFailedToLoad(p0)
+            }
+
+            override fun onAdLoaded() {
+                Timber.d("Ad loded")
+                super.onAdLoaded()
+            }
+        }
+
 
         taskStartButton.setOnClickListener {
             if (mInterstitialAd.isLoaded) {
@@ -89,26 +131,6 @@ class TaskActivity : AppCompatActivity() {
                     }
                 }
         })
-
-        mInterstitialAd.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                currentTaskImpression.value!!.plus(1)
-            }
-
-            override fun onAdFailedToLoad(errorCode: Int) {
-                util.showToastMessage("Error while load ad. ERROR_CODE : $errorCode")
-            }
-
-            override fun onAdOpened() {
-                currentTaskClick.value!!.plus(1)
-            }
-
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            override fun onAdClosed() {}
-        }
 
     }
 
