@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="0dp"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/historyMobileNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6352122123"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+            <TextView
+                android:id="@+id/historyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pending"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/historyAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="$ 200"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
