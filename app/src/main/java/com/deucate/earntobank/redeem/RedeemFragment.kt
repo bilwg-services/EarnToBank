@@ -35,14 +35,12 @@ class RedeemFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_redeem, container, false)
 
-        processDialog = ProgressDialog.show(activity, "Loading", "Your request is in process")
-
         val totalEarningInRupee = totalPoints / pointsPerRupee
 
         rootView.redeemTotalAmount.text = "₹ $totalEarningInRupee"
 
         rootView.redeemTotalSendBtn.setOnClickListener {
-            if (totalEarningInRupee <= 100) {
+            if (totalEarningInRupee < 100) {
                 Toast.makeText(activity, "Reach ₹100 to withdraw money.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             } else {
@@ -66,6 +64,11 @@ class RedeemFragment : Fragment() {
                     return@setOnClickListener
                 }
 
+                if (amountInLong > (totalPoints/pointsPerRupee)){
+                    rootView.redeemAmountToRedeem.error = "Why?"
+                    return@setOnClickListener
+                }
+
                 sendWithdrawalRequest(mobileNumber, amountInLong)
             }
         }
@@ -74,11 +77,12 @@ class RedeemFragment : Fragment() {
     }
 
     private fun sendWithdrawalRequest(mobileNumber: String, amountInLong: Long) {
-        processDialog.show()
+        processDialog = ProgressDialog.show(activity, "Loading", "Your request is in process")
         val data = HashMap<String, Any>()
         data["MobileNumber"] = mobileNumber
         data["Amount"] = amountInLong
         data["UID"] = auth.uid!!
+        data["Status"] = false
 
         db.collection(getString(R.string.withdrawel)).document().set(data).addOnCompleteListener {
             if (it.isSuccessful) {
@@ -93,14 +97,18 @@ class RedeemFragment : Fragment() {
 
     private fun updateUserData(amount: Long) {
         val data = HashMap<String, Any>()
-        data["TotalPoints"] = totalPoints - amount
+        data["TotalPoints"] = totalPoints - (amount * HomeActivity.pointsPerRupee)
 
         db.collection(getString(R.string.users)).document(auth.uid!!).update(data)
             .addOnCompleteListener {
+                processDialog.dismiss()
                 if (it.isSuccessful) {
-                    processDialog.show()
+                    Toast.makeText(
+                        activity,
+                        "You will get your amount in 24 hour.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    processDialog.dismiss()
                     HomeActivity.totalPoints = totalPoints - amount
                     AlertDialog.Builder(activity).setTitle("Error")
                         .setMessage(it.exception!!.localizedMessage).show()

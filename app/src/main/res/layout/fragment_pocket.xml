@@ -32,6 +32,7 @@
                 android:text="@string/total_amount" />
 
             <TextView
+                android:id="@+id/pocketTotalAmount"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,6 +77,7 @@
                     android:textSize="28sp" />
 
                 <TextView
+                    android:id="@+id/pocketReferralEarn"
                     style="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,6 +103,7 @@
                     android:textSize="28sp" />
 
                 <TextView
+                    android:id="@+id/pocketRecharge"
                     style="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,6 +129,7 @@
                     android:textSize="28sp" />
 
                 <TextView
+                    android:id="@+id/pocketTotalEarn"
                     style="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
