@@ -62,7 +62,7 @@ class ReferActivity : AppCompatActivity() {
     }
 
     private fun getUserDetail(uid: String) {
-        FirebaseFirestore.getInstance().collection(getString(com.deucate.earntobank.R.string.users))
+        FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App").collection(getString(com.deucate.earntobank.R.string.users))
             .document(uid).get().addOnCompleteListener {
                 if (it.isSuccessful) {
                     try {

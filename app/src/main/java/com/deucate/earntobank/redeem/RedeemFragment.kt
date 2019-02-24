@@ -22,7 +22,7 @@ class RedeemFragment : Fragment() {
     private val pointsPerRupee = HomeActivity.pointsPerRupee
     private val totalPoints = HomeActivity.totalPoints
 
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
     private val auth = FirebaseAuth.getInstance()
 
     private lateinit var processDialog: AlertDialog

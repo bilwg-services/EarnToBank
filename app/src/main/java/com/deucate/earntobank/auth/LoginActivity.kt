@@ -32,8 +32,9 @@ class LoginActivity : AppCompatActivity() {
     private val signIn = 68
     private val util = Util(this)
 
-    val db = FirebaseFirestore.getInstance()
+    val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
 
+    @Suppress("UnresolvedReference")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (auth.currentUser != null) {
@@ -98,7 +99,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkNewUser() {
-        val uid = auth.uid!!
         db.collection(getString(R.string.users)).document(auth.uid!!).get().addOnCompleteListener {
             val result = it.result!!
             if (it.isSuccessful) {

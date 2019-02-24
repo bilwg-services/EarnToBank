@@ -25,7 +25,7 @@ class TaskActivity : AppCompatActivity() {
     private var status = false
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
 
     private lateinit var util: Util
 

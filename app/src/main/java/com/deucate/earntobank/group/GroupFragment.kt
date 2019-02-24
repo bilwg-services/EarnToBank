@@ -20,7 +20,7 @@ import timber.log.Timber
 class GroupFragment : Fragment() {
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
     private val data = ArrayList<RefUser>()
     private val adapter = GroupAdapter(data)
 

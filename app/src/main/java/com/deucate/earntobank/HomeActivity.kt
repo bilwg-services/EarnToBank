@@ -45,7 +45,7 @@ import java.lang.NullPointerException
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
 
     private val currentFragment = MutableLiveData<Fragment>()
     private val currentTitle = MutableLiveData<String>()
@@ -69,6 +69,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"))
 
         MobileAds.initialize(this, getString(R.string.app_id))
+
+        var name = getString(R.string.app_name)
+        name = name.replace(" ","")
+        Timber.d("---> $name")
 
         util = Util(this)
         progressDialog = ProgressDialog(this)

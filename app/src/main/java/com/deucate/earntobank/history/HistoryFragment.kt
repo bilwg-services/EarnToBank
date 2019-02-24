@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_history.view.*
 class HistoryFragment : Fragment() {
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
 
     private val histories = ArrayList<History>()
     private val adapter = HistoryAdapter(histories)

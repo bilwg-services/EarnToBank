@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_pocket.view.*
 
 class PocketFragment : Fragment() {
 
-    private val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
     private val auth = FirebaseAuth.getInstance()
 
     private val totalPoint = HomeActivity.totalPoints

@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "798684536565-4km6ipiaiavce3i7j4p3fu6gu6geg74v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deucate.earnengine",
+            "certificate_hash": "5ca558b05a60a700ee938cdbec0a88ca40f6646a"
+          }
+        },
+        {
           "client_id": "798684536565-gglbiol3ri0hrv14hm5ln2baheru90dt.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -72,6 +80,14 @@
           "android_info": {
             "package_name": "com.deucate.earntobank",
             "certificate_hash": "58790bfb18524ebeabbb3a3539f521949b4ade18"
+          }
+        },
+        {
+          "client_id": "798684536565-0d27df80nflk1o4pb1tuu6la3tvhhs6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deucate.earntobank",
+            "certificate_hash": "5ca558b05a60a700ee938cdbec0a88ca40f6646a"
           }
         },
         {
