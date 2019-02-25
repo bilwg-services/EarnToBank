@@ -25,11 +25,14 @@ class ReferActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
     private lateinit var util: Util
 
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_refer)
 
         val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
+
 
         codeScanner = CodeScanner(this, scannerView)
         util = Util(this)
@@ -62,7 +65,8 @@ class ReferActivity : AppCompatActivity() {
     }
 
     private fun getUserDetail(uid: String) {
-        FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App").collection(getString(com.deucate.earntobank.R.string.users))
+
+        db.collection(getString(com.deucate.earntobank.R.string.users))
             .document(uid).get().addOnCompleteListener {
                 if (it.isSuccessful) {
                     try {

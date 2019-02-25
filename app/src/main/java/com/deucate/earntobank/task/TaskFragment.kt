@@ -20,7 +20,7 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
 
     private val tasks = MutableLiveData<ArrayList<Task>>()
 
-    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
     private val auth = FirebaseAuth.getInstance()
 
     private var lastTask = 0L

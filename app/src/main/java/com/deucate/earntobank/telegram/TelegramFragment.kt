@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_telegram.view.*
 class TelegramFragment : Fragment() {
 
     private lateinit var util: Util
-    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
     private val telegramData = ArrayList<HomeFragment.Home>()
     private lateinit var adaper: MainAdapter
 

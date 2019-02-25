@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
     private val signIn = 68
     private val util = Util(this)
 
-    val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
 
     @Suppress("UnresolvedReference")
     override fun onCreate(savedInstanceState: Bundle?) {

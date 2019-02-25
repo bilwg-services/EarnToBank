@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 class HomeFragment : Fragment() {
 
     private lateinit var util: Util
-    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
     private val homeData = ArrayList<Home>()
     private lateinit var adapter: MainAdapter
 

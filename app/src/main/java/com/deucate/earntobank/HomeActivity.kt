@@ -45,7 +45,7 @@ import java.lang.NullPointerException
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance().collection(getString(R.string.app_name)).document("App")
+    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
 
     private val currentFragment = MutableLiveData<Fragment>()
     private val currentTitle = MutableLiveData<String>()
