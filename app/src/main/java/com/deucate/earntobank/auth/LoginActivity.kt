@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -32,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
     private val signIn = 68
     private val util = Util(this)
 
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
 
     @Suppress("UnresolvedReference")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,9 @@ class LoginActivity : AppCompatActivity() {
             startHomeActivity()
         }
         setContentView(R.layout.activity_login)
+
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_DENIED

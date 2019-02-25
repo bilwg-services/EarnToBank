@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_history.view.*
 
 class HistoryFragment : Fragment() {
 
     private val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
 
     private val histories = ArrayList<History>()
     private val adapter = HistoryAdapter(histories)
@@ -26,7 +27,8 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         val recyclerView = rootView.historyRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

@@ -13,6 +13,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_task.*
 import timber.log.Timber
@@ -25,7 +26,7 @@ class TaskActivity : AppCompatActivity() {
     private var status = false
 
     private val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
 
     private lateinit var util: Util
 
@@ -45,7 +46,8 @@ class TaskActivity : AppCompatActivity() {
             taskImpressionCount.text = "10/10"
             return
         }
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         util = Util(this)
 
         MobileAds.initialize(this, getString(R.string.app_id))

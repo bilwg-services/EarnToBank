@@ -16,6 +16,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.deucate.earntobank.R
+import com.google.firebase.firestore.DocumentReference
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_profile_ref.view.*
 
@@ -25,7 +26,7 @@ class ReferActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
     private lateinit var util: Util
 
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

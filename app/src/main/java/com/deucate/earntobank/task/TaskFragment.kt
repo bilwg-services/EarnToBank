@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_task.view.*
 
@@ -20,7 +21,7 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
 
     private val tasks = MutableLiveData<ArrayList<Task>>()
 
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val auth = FirebaseAuth.getInstance()
 
     private var lastTask = 0L
@@ -35,7 +36,8 @@ class TaskFragment : Fragment(), TaskAdapter.OnClickTaskCard {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_task, container, false)
         tasks.value = loadRecyclerViewData()
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         adapter = TaskAdapter(tasks.value!!, this)
         val recyclerView = rootView.taskRecyclerView
         recyclerView.layoutManager = GridLayoutManager(activity, 2)

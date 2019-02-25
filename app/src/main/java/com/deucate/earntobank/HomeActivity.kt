@@ -34,6 +34,7 @@ import com.deucate.earntobank.pocket.PocketFragment
 import com.deucate.earntobank.task.TaskFragment
 import com.deucate.earntobank.telegram.TelegramFragment
 import com.google.android.gms.ads.*
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import de.hdodenhof.circleimageview.CircleImageView
@@ -45,7 +46,7 @@ import java.lang.NullPointerException
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
 
     private val currentFragment = MutableLiveData<Fragment>()
     private val currentTitle = MutableLiveData<String>()
@@ -69,9 +70,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"))
 
         MobileAds.initialize(this, getString(R.string.app_id))
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         var name = getString(R.string.app_name)
-        name = name.replace(" ","")
+        name = name.replace(" ", "")
         Timber.d("---> $name")
 
         util = Util(this)
@@ -82,10 +84,29 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         db.collection(getString(R.string.important)).document("Value").get().addOnCompleteListener {
             if (it.isSuccessful) {
-                bannerAdID = it.result!!.getString("BannerAdID")!!
-                interstitialAdID = it.result!!.getString("InterstitialAdID")!!
-                impressionPoints = it.result!!.getLong("ImpressionPoint")!!
-                pointsPerRupee = it.result!!.getLong("PointsPerRupee")!!
+                try {
+                    bannerAdID = it.result!!.getString("BannerAdID")!!
+                } catch (e: KotlinNullPointerException) {
+                    e.printStackTrace()
+                }
+                try {
+
+                    interstitialAdID = it.result!!.getString("InterstitialAdID")!!
+                } catch (e: KotlinNullPointerException) {
+                    e.printStackTrace()
+                }
+                try {
+
+                    impressionPoints = it.result!!.getLong("ImpressionPoint")!!
+                } catch (e: KotlinNullPointerException) {
+                    e.printStackTrace()
+                }
+                try {
+
+                    pointsPerRupee = it.result!!.getLong("PointsPerRupee")!!
+                } catch (e: KotlinNullPointerException) {
+                    e.printStackTrace()
+                }
             } else {
                 util.showAlertDialog("Error", it.exception!!.localizedMessage)
             }

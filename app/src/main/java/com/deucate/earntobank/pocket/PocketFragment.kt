@@ -13,13 +13,14 @@ import androidx.lifecycle.Observer
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_pocket.view.*
 
 
 class PocketFragment : Fragment() {
 
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val auth = FirebaseAuth.getInstance()
 
     private val totalPoint = HomeActivity.totalPoints
@@ -34,7 +35,8 @@ class PocketFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_pocket, container, false)
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         val totalAmount = totalPoint / pointsPerRupee
         rootView.pocketTotalAmount.text = totalAmount.toString()
         totalEarn.value = totalAmount

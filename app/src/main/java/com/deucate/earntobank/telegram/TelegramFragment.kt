@@ -15,6 +15,7 @@ import com.deucate.earntobank.MainAdapter
 import com.deucate.earntobank.R
 import com.deucate.earntobank.Util
 import com.deucate.earntobank.home.HomeFragment
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_telegram.*
 import kotlinx.android.synthetic.main.fragment_telegram.view.*
@@ -23,20 +24,21 @@ import kotlinx.android.synthetic.main.fragment_telegram.view.*
 class TelegramFragment : Fragment() {
 
     private lateinit var util: Util
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val telegramData = ArrayList<HomeFragment.Home>()
-    private lateinit var adaper: MainAdapter
+    private lateinit var adapter: MainAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_telegram, container, false)
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         util = Util(activity as Context)
         getData()
 
-        adaper = MainAdapter(
+        adapter = MainAdapter(
             telegramData,
             object : MainAdapter.OnClickHomeCard {
                 override fun onClickLink(link: String) {
@@ -52,7 +54,7 @@ class TelegramFragment : Fragment() {
 
         val recyclerView = rootView.telegramRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adaper
+        recyclerView.adapter = adapter
 
         return rootView
     }
@@ -69,7 +71,7 @@ class TelegramFragment : Fragment() {
                         )
                     )
                 }
-                adaper.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
                 if (!(it.result!!.isEmpty)) {
                     telegramTextView.visibility = View.INVISIBLE
                 }

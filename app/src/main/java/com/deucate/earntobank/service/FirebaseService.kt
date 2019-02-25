@@ -27,14 +27,12 @@ import java.util.*
 
 class FirebaseService : FirebaseMessagingService() {
 
-    private val database: SQLiteDatabase
-
-    init {
-        val dbHelper = DatabseHalper(applicationContext, Util.tableName, null, 1)
-        database = dbHelper.writableDatabase
-    }
+    private lateinit var database: SQLiteDatabase
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+
+        val dbHelper = DatabseHalper(this, Util.tableName, null, 1)
+        database = dbHelper.writableDatabase
 
         Timber.d("From: ${remoteMessage?.from}")
 
@@ -63,7 +61,8 @@ class FirebaseService : FirebaseMessagingService() {
             SimpleDateFormat("dd/MM/yy hh:mm aa").format(Calendar.getInstance().time)
         )
 
-        database.insert(Util.tableName, null, row)
+        val added = database.insert(Util.tableName, null, row)
+        Timber.d("------>$added")
     }
 
     private fun scheduleJob() {

@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.deucate.earntobank.HomeActivity
 import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_redeem.view.*
 
@@ -22,7 +23,7 @@ class RedeemFragment : Fragment() {
     private val pointsPerRupee = HomeActivity.pointsPerRupee
     private val totalPoints = HomeActivity.totalPoints
 
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val auth = FirebaseAuth.getInstance()
 
     private lateinit var processDialog: AlertDialog
@@ -34,7 +35,8 @@ class RedeemFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_redeem, container, false)
-
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
         val totalEarningInRupee = totalPoints / pointsPerRupee
 
         rootView.redeemTotalAmount.text = "₹ $totalEarningInRupee"

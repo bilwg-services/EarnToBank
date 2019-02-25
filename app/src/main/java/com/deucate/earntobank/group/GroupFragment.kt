@@ -12,6 +12,7 @@ import androidmads.library.qrgenearator.QRGEncoder
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deucate.earntobank.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_group.view.*
 import timber.log.Timber
@@ -20,7 +21,7 @@ import timber.log.Timber
 class GroupFragment : Fragment() {
 
     private val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val data = ArrayList<RefUser>()
     private val adapter = GroupAdapter(data)
 
@@ -30,6 +31,9 @@ class GroupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_group, container, false)
+
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
 
         val qrgEncoder = QRGEncoder(auth.currentUser!!.uid, null, QRGContents.Type.TEXT, 200)
         try {

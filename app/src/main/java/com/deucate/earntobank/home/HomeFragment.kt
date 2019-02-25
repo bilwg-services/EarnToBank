@@ -17,13 +17,14 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import com.deucate.earntobank.MainAdapter
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var util: Util
-    val db = FirebaseFirestore.getInstance().collection("Apps").document(getString(R.string.app_name))
+    private lateinit var db: DocumentReference
     private val homeData = ArrayList<Home>()
     private lateinit var adapter: MainAdapter
 
@@ -34,6 +35,11 @@ class HomeFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_home, container, false)
         util = Util(activity as Context)
+
+
+        db = FirebaseFirestore.getInstance().collection("Apps")
+            .document(getString(R.string.app_name))
+
         getData()
 
         adapter = MainAdapter(
