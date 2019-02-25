@@ -3,36 +3,67 @@ package com.deucate.earntobank.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.deucate.earntobank.DatabseHalper
 import com.deucate.earntobank.HomeActivity
-import com.deucate.earntobank.R
+import com.deucate.earntobank.Util
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.ValidationEnforcer
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
+import android.annotation.SuppressLint
+import com.deucate.earntobank.R
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class FirebaseService : FirebaseMessagingService() {
+
+    private val database: SQLiteDatabase
+
+    init {
+        val dbHelper = DatabseHalper(applicationContext, Util.tableName, null, 1)
+        database = dbHelper.writableDatabase
+    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
 
         Timber.d("From: ${remoteMessage?.from}")
 
-        remoteMessage?.data?.isNotEmpty()?.let {
+        val isEmpty = remoteMessage!!.data
+
+        isEmpty.isNotEmpty().let {
             Timber.d("Message data payload: %s", remoteMessage.data)
             scheduleJob()
         }
 
-        remoteMessage?.notification?.let {
+        remoteMessage.notification?.let {
             Timber.d("Message Notification Body: ${it.body}")
-            sendNotification(it.body!!)
+            sendNotification(it)
+            addToDatabase(it)
         }
 
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun addToDatabase(data: RemoteMessage.Notification) {
+        val row = ContentValues()
+        row.put(Util.message, data.body)
+        row.put(Util.title, data.title)
+        row.put(
+            Util.time,
+            SimpleDateFormat("dd/MM/yy hh:mm aa").format(Calendar.getInstance().time)
+        )
+
+        database.insert(Util.tableName, null, row)
     }
 
     private fun scheduleJob() {
@@ -47,7 +78,7 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
-    private fun sendNotification(messageBody: String) {
+    private fun sendNotification(notification: RemoteMessage.Notification) {
         val intent = Intent(this, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
@@ -60,7 +91,8 @@ class FirebaseService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText(messageBody)
+            .setContentText(notification.body)
+            .setContentTitle(notification.title)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
